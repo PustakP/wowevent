@@ -1,8 +1,10 @@
 // app/[subdomain]/page.tsx
 import { headers } from 'next/headers';
-import { POST } from '@/app/api/register-subdomain/route';
+import pool from '@/app/lib/db'; // import the database connection
 
-const registeredSubdomains: string[] = (POST as any).registeredSubdomains || []; // in-memory storage for demo purposes
+interface Subdomain {
+    name: string; // define the structure of the subdomain object
+}
 
 export default async function SubdomainPage({ params }: { params: any }) {
     const headersList = headers();
@@ -19,9 +21,11 @@ export default async function SubdomainPage({ params }: { params: any }) {
     }
     console.log('Final Subdomain:', subdomain); // log final subdomain
     console.log('Subdomain:', subdomain); // log extracted subdomain
-    console.log('Registered Subdomains:', registeredSubdomains); // log registered subdomains
 
-    const isValidSubdomain = registeredSubdomains.includes(`${subdomain}.catalystiq.fun`); // validate subdomain
+    // Fetch registered subdomains from PostgreSQL
+    const { rows: registeredSubdomains } = await pool.query('SELECT name FROM subdomains');
+
+    const isValidSubdomain = registeredSubdomains.some((item: Subdomain) => item.name === subdomain);
     console.log('Is Valid Subdomain:', isValidSubdomain); // log validation result
 
     if (!isValidSubdomain) {
