@@ -1,5 +1,7 @@
 import { headers } from 'next/headers';
-import { registeredSubdomains } from '@/app/api/register-subdomain/route';
+import { POST } from '@/app/api/register-subdomain/route';
+
+const registeredSubdomains: string[] = (POST as any).registeredSubdomains || [];
 
 export default function SubdomainPage({ params }: { params: any }) {
   const headersList = headers();
