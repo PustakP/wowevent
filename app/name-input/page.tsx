@@ -9,7 +9,7 @@ export default function NameInput() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const subdomain = `${name}.test.example.com`; // Replace with your domain
+    const subdomain = `${name}.catalystiq.fun`;
      try {
         const response = await fetch('/api/register-subdomain', {
           method: 'POST',

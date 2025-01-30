@@ -15,7 +15,7 @@ export default async function SubdomainPage({ params }: { params: any }) {
             subdomain = parts[0];
         }
     }
-    const isValidSubdomain = registeredSubdomains.includes(`${subdomain}.test.example.com`);
+    const isValidSubdomain = registeredSubdomains.includes(`${subdomain}.catalystiq.fun`);
 
     if (!isValidSubdomain) {
         return <div><h1>Error: Subdomain not registered</h1></div>;
