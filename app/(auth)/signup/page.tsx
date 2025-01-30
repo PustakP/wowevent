@@ -1,19 +1,61 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { createClient } from "../../utils/supabase/clients";
+import { useRouter } from "next/navigation";
+
+
 
 export default function SignUp() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const supabase = createClient();
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Check if the user is already logged in
+    const checkUserSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+  
+      if (session) {
+        // If user is logged in, redirect to dashboard
+        router.push("/dashboard");
+      }
+    };
+      router.push("/")
+  
+    checkUserSession();
+  }, []);
+
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle sign up logic here
+    const { name, email, password } = e.currentTarget.elements as typeof e.currentTarget.elements & {
+      name: HTMLInputElement;
+      email: HTMLInputElement;
+      password: HTMLInputElement;
+    }; // Cast to include specific input types
+
+    const { data, error } = await supabase.auth.signUp({
+      email: email.value,
+      password: password.value,
+    });
+
+    if (error) {
+      console.error("Signup error:", error.message);
+      return error.message;
+    }
+
+    router.push("/dashboard"); // Redirect after signup
   };
 
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({ provider: "google" });
+    if (error) setError(error.message);
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
@@ -22,7 +64,7 @@ export default function SignUp() {
           <p className="mt-2 text-gray-600">Start your event planning journey</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        <form onSubmit={handleSignUp} className="mt-8 space-y-6">
           <div className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -114,6 +156,7 @@ export default function SignUp() {
               <button
                 type="button"
                 className="w-full flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-gray-700 hover:bg-gray-50"
+                onClick={handleGoogleLogin}
               >
                 <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
                   <path

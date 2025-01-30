@@ -1,18 +1,63 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
+import { createClient } from "../../utils/supabase/clients";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const supabase = createClient();
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Check if the user is already logged in
+    const checkUserSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+  
+      if (session) {
+        // If user is logged in, redirect to dashboard
+        router.push("/dashboard");
+      }
+    };
+    router.push("/")
+  
+    checkUserSession();
+  }, []);
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle login logic here
-  };
+    const { email, password } = e.currentTarget.elements as typeof e.currentTarget.elements & {
+      email: HTMLInputElement;
+      password: HTMLInputElement;
+    }; // Cast to include specific input types
 
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.value,
+      password: password.value,
+    });
+  
+    if (error) {
+      console.error("Login error:", error.message);
+      return error.message;
+    }
+  
+    router.push("/dashboard"); // Redirect after login
+  };
+  const handleGoogleLogin = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+  
+    if (error) {
+      console.error("Google Login error:", error.message);
+      return error.message;
+    }
+  
+    // Redirects automatically, Supabase handles it
+  };
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
@@ -21,7 +66,7 @@ export default function Login() {
           <p className="mt-2 text-gray-600">Sign in to your account</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        <form onSubmit={handleLogin} className="mt-8 space-y-6">
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -110,7 +155,8 @@ export default function Login() {
               <button
                 type="button"
                 className="w-full flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-gray-700 hover:bg-gray-50"
-              >
+                onClick={handleGoogleLogin}
+                >
                 <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

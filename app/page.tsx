@@ -1,7 +1,27 @@
+"use client"
 import Link from 'next/link';
 import { ArrowRight, Users, MessageSquare, Globe, Star } from 'lucide-react';
+import { useEffect } from "react";
+import { createClient } from "./utils/supabase/clients"
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const supabase = createClient();
+  const router = useRouter();
+  useEffect(() => {
+    // Check if the user is already logged in
+    const checkUserSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+  
+      if (session) {
+        // If user is logged in, redirect to dashboard
+        router.push("/dashboard");
+      }
+    };
+  
+    checkUserSession();
+  }, []);
+  
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
