@@ -19,7 +19,7 @@ export default function NameInput() {
           body: JSON.stringify({ subdomain }),
         });
 
-         if (response.ok) {  window.location.href = `http://${subdomain}`;} else {alert ('error registering subdomain')}
+         if (response.ok) {} else {alert ('error registering subdomain')}
       } catch (error) {
         console.error('Error registering subdomain:', error);
         alert('error registering subdomain')
