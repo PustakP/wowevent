@@ -1,77 +1,63 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import VendorCard from './VendorCard';
+import { createClient } from '../utils/supabase/clients';
 
-const vendors = [
-  {
-    id: '1',
-    name: 'Flowers By Honey',
-    image: '/placeholder.svg?height=200&width=250',
-    date: 'April 2, 2025',
-    duration: '2 Day Fest',
-    type: 'Wedding'
-  },
-  {
-    id: '2',
-    name: 'Café LAmour Catering',
-    image: '/placeholder.svg?height=200&width=250',
-    date: 'January 12, 2025',
-    type: 'Conference'
-  },
-  {
-    id: '3',
-    name: 'Live Band – The Yellow Diary',
-    image: '/placeholder.svg?height=200&width=250',
-    date: 'May 12, 2019',
-    type: 'Wedding'
-  },
-  // Duplicate the first 3 vendors twice more to fill the grid
-  {
-    id: '4',
-    name: 'Flowers By Honey',
-    image: '/placeholder.svg?height=200&width=250',
-    date: 'April 2, 2025',
-    duration: '2 Day Fest',
-    type: 'Wedding'
-  },
-  {
-    id: '5',
-    name: 'Café LAmour Catering',
-    image: '/placeholder.svg?height=200&width=250',
-    date: 'January 12, 2025',
-    type: 'Conference'
-  },
-  {
-    id: '6',
-    name: 'Live Band – The Yellow Diary',
-    image: '/placeholder.svg?height=200&width=250',
-    date: 'May 12, 2019',
-    type: 'Wedding'
-  },
-  {
-    id: '7',
-    name: 'Flowers By Honey',
-    image: '/placeholder.svg?height=200&width=250',
-    date: 'April 2, 2025',
-    duration: '2 Day Fest',
-    type: 'Wedding'
-  },
-  {
-    id: '8',
-    name: 'Café LAmour Catering',
-    image: '/placeholder.svg?height=200&width=250',
-    date: 'January 12, 2025',
-    type: 'Conference'
-  },
-  {
-    id: '9',
-    name: 'Live Band – The Yellow Diary',
-    image: '/placeholder.svg?height=200&width=250',
-    date: 'May 12, 2019',
-    type: 'Wedding'
-  }
-];
+// Define the type for an event
+interface Event {
+  id: string;
+  name: string;
+  images: string[]; // Array of image URLs
+  date: string; // Assuming date is stored as a string (e.g., ISO format)
+  type: string;
+  requirements?: string; // Optional field
+}
 
 const VendorGrid: React.FC = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const supabase = createClient(); // Initialize Supabase client
+      try {
+        const { data, error } = await supabase
+          .from('events') // Replace 'events' with your table name
+          .select('*'); // Fetch all columns or specify the ones you need
+
+        if (error) {
+          throw error;
+        }
+
+        // Map the data to the Event type
+        const formattedEvents = data.map((event: any) => ({
+          id: event.id,
+          name: event.name,
+          images: event.images || [], // Default to an empty array if images is null
+          date: event.date,
+          type: event.type,
+          requirements: event.requirements,
+        }));
+
+        setEvents(formattedEvents); // Set the fetched events in state
+      } catch (err) {
+        setError(err.message); // Handle errors
+      } finally {
+        setLoading(false); // Set loading to false after fetching
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  if (loading) {
+    return <div>Loading events...</div>;
+  }
+
+  if (error) {
+    return <div>Error fetching events: {error}</div>;
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="space-y-2 mb-8">
@@ -84,8 +70,18 @@ const VendorGrid: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {vendors.map((vendor) => (
-          <VendorCard key={vendor.id} vendor={vendor} />
+        {events.map((event) => (
+          <VendorCard
+            key={event.id}
+            vendor={{
+              id: event.id,
+              name: event.name,
+              image: event.images[0] || '/placeholder.svg?height=200&width=250', // Use the first image or a placeholder
+              date: event.date,
+              type: event.type,
+              requirements: event.requirements,
+            }}
+          />
         ))}
       </div>
     </div>
