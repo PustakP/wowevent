@@ -20,9 +20,10 @@ export default function NameInput() {
         });
 
         if (response.ok) {
-            // handle success
+            // handle success (e.g., redirect or show success message)
         } else {
-            alert('Error registering subdomain');
+            const errorData = await response.json();
+            alert(errorData.message); // Show the error message from the API
         }
     } catch (error) {
         console.error('Error registering subdomain:', error);
