@@ -33,7 +33,7 @@ const EventDashboard = () => {
           {/* Right side - Stats and Event Card */}
           <div className="relative h-[500px]">
             {/* Circular Progress Card */}
-            <div className="absolute top-0 left-0 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl 
+            <div className="absolute top-0 z-30 left-0 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl 
               dark:shadow-gray-900/50 z-10 transition-all duration-300 hover:shadow-2xl 
               hover:scale-105 backdrop-blur-sm bg-opacity-80 dark:bg-opacity-80">
               <div className="relative w-36 h-36">
@@ -81,7 +81,7 @@ const EventDashboard = () => {
               dark:bg-opacity-80 relative z-20">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-4 shadow-lg">
                 <img
-                  src="/api/placeholder/400/300"
+                  src="/image.png"
                   alt="Event stage"
                   className="w-full h-full object-cover transform transition-transform duration-300 hover:scale-110"
                 />

@@ -5,9 +5,9 @@ import Link from 'next/link';
 interface Vendor {
   id: string;
   name: string;
-  image: string;
+  images: string;
   date: string;
-  requirements: string;
+  requirements: string[];
   duration?: string;
   type: string;
 }
@@ -18,15 +18,12 @@ interface VendorCardProps {
 
 const VendorCard: React.FC<VendorCardProps> = ({ vendor }) => {
   return (
-    // <Link 
-    //   href={`/vendors/${vendor.id}` as string}
-    //   className="group block"
-    // >
+    <Link href={`/event/${vendor.id}`}>
       <div className="rounded-xl overflow-hidden bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
         <div className="relative aspect-[5/4] overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5 group-hover:from-blue-600/10 group-hover:to-purple-600/10" />
           <img
-            src={vendor.image || '/placeholder.svg?height=200&width=250'}
+            src={vendor.images[0] || '/placeholder.svg?height=200&width=250'}
             alt={`${vendor.name} preview`}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
@@ -56,10 +53,10 @@ const VendorCard: React.FC<VendorCardProps> = ({ vendor }) => {
             {vendor.name}
           </h3>
 
-          <p className="text-gray-600">{vendor.requirements}</p>
+          <p className="text-gray-600">{vendor.requirements || 'No requirements specified'}</p>
         </div>
       </div>
-    // </Link>
+    </Link>
   );
 };
 

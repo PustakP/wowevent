@@ -20,7 +20,7 @@ export function LatestEvents() {
       <div className="container px-4 mx-auto">
         {/* Header Section */}
         <div className="flex flex-col items-center justify-center text-center mb-12 space-y-4">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h2 className="from-white to-gray-400 dark:from-white dark:to-gray-400 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             LATEST EVENTS
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">

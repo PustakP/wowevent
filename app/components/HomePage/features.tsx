@@ -14,40 +14,41 @@ import {
 } from "lucide-react";
 
 const features = [
-  {
-    icon: LayoutDashboard,
-    title: "Centralized Dashboard",
-    description: "Lorem ipsum dolor sit amet, feugiat consectetuer adipiscing elit dolore",
-    tag: "Popular"
-  },
-  {
-    icon: CreditCard,
-    title: "End-to-End Payment Integration",
-    description: "Lorem ipsum dolor sit amet, feugiat consectetuer adipiscing elit dolore",
-    tag: "New"
-  },
-  {
-    icon: BarChart2,
-    title: "Data-Driven Insights",
-    description: "Lorem ipsum dolor sit amet, feugiat consectetuer adipiscing elit dolore"
-  },
-  {
-    icon: Globe,
-    title: "Subdomains for Events & Conferences",
-    description: "Lorem ipsum dolor sit amet, feugiat consectetuer adipiscing elit dolore"
-  },
-  {
-    icon: Users,
-    title: "Vendor Marketplace with Bidding System",
-    description: "Lorem ipsum dolor sit amet, feugiat consectetuer adipiscing elit dolore",
-    tag: "Beta"
-  },
-  {
-    icon: MessageSquare,
-    title: "Real-Time Communication & Networking",
-    description: "Lorem ipsum dolor sit amet, feugiat consectetuer adipiscing elit dolore"
-  }
-];
+    {
+      icon: LayoutDashboard,
+      title: "Centralized Event Dashboard",
+      description: "Manage schedules, vendors, attendees, and budgets effortlessly from a single, intuitive interface.",
+      tag: "Popular"
+    },
+    {
+      icon: CreditCard,
+      title: "End-to-End Payment Integration",
+      description: "Secure and seamless transactions with multiple payment options, ensuring a hassle-free booking and payment experience.",
+      tag: "New"
+    },
+    {
+      icon: BarChart2,
+      title: "Data-Driven Insights",
+      description: "Gain valuable analytics on attendee engagement, vendor performance, and event success to optimize future planning."
+    },
+    {
+      icon: Globe,
+      title: "Custom Event Subdomains",
+      description: "Each event gets a unique branded page to showcase agendas, speaker profiles, and a smooth registration process."
+    },
+    {
+      icon: Users,
+      title: "Vendor Marketplace with Bidding",
+      description: "Vendors can bid for event requirements, ensuring competitive pricing and better service selection.",
+      tag: "Beta"
+    },
+    {
+      icon: MessageSquare,
+      title: "Real-Time Communication & Networking",
+      description: "Enable seamless interaction between organizers, vendors, and attendees via chat, live Q&A, and video calls."
+    }
+  ];
+  
 
 const brands = ['Facebook', 'Webflow', 'Google', 'YouTube', 'Pinterest'];
 
@@ -64,7 +65,7 @@ export function FeaturesSection() {
               Simple, yet powerful features
             </span>
           </h2>
-          <p className="text-lg bg-gradient-to-r from-foreground/80 to-foreground/60 bg-clip-text text-transparent max-w-2xl mx-auto">
+          <p className="text-lg bg-gradient-to-r from-foreground/80 to-foreground/60 bg-clip-text text-transparent max-w-2xl mx-auto from-white to-gray-400 dark:from-white dark:to-gray-400">
             Everything you need to manage your business, all in one place. Start with the basics and scale up as you grow.
           </p>
           <div className="flex justify-center gap-4 pt-4">

@@ -34,19 +34,19 @@ export function Navbar() {
               Home
             </Link>
             <Link 
-              href="/about" 
+              href="/signup" 
               className="text-sm font-medium transition-colors hover:text-primary"
             >
               About
             </Link>
             <Link 
-              href="/services" 
+              href="/signup" 
               className="text-sm font-medium transition-colors hover:text-primary"
             >
               Services
             </Link>
             <Link 
-              href="/contact" 
+              href="/signup" 
               className="text-sm font-medium transition-colors hover:text-primary"
             >
               Contact us
@@ -55,15 +55,9 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Link 
-            href="/profile" 
-            className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary"
-          >
-            <User className="h-5 w-5" />
-            <span className="hidden md:inline">Profile</span>
-          </Link>
+          
           <Button asChild>
-            <Link href="/get-started">
+            <Link href="/signup">
               Get started
             </Link>
           </Button>
