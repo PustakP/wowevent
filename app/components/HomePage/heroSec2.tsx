@@ -6,9 +6,9 @@ import { motion } from "framer-motion";
 
 const eventData = [
   {
-    mainImage: "/image1.png",
-    overlayImage1: "/image2.png",
-    overlayImage2: "/image3.png",
+    mainImage: "https://catalystiq.fun/image1.png",
+    overlayImage1: "https://catalystiq.fun/image2.png",
+    overlayImage2: "https://catalystiq.fun/image3.png",
     title: "",
     date: ""
   }

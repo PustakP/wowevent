@@ -6,7 +6,7 @@ const AlternatingSections = () => {
     {
       title: "All-in-one analytics tool",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Facilisi felis, et id aliquam ac tincidunt. Sapien vel tellus mattis hendrerit orci ut etiam nullam.",
-      image: "/Campaign.png",
+      image: "https://catalystiq.fun/Campaign.png",
       features: [
         "Real-time data tracking",
         "Custom dashboard creation",
@@ -16,7 +16,7 @@ const AlternatingSections = () => {
     {
       title: "Analyze user analytics",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum enim nulla enim sapien nulla quis. Faucibus leo id venenatis, nam. Purus interdum quisque neque vitae.",
-      image: "/Analytics.png",
+      image: "https://catalystiq.fun/Analytics.png",
       features: [
         "User behavior insights",
         "Conversion tracking",

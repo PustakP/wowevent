@@ -16,7 +16,7 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-2">
             <div className="relative h-12 w-12">
               <Image
-                src="/logo.svg"
+                src="https://catalystiq.fun/logo.svg"
                 alt="WEHIndia Logo"
                 width={48}
                 height={48}

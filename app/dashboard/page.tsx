@@ -289,7 +289,7 @@ const handleStatusUpdate = async (bidId: string, newStatus: string) => {
                   <div key={event.id} className={`p-6 rounded-2xl transition-colors duration-200 ${darkMode ? 'bg-gray-800 shadow-lg shadow-gray-900/50' : 'bg-white shadow-lg shadow-gray-200/50'}`}>
                     {event.images?.[0] && (
                       <div className="h-48 mb-4 rounded-lg overflow-hidden">
-                        <img src={event.images[0]} alt={event.name} className="w-full h-full object-cover" />
+                        <img src={`https://catalystiq.fun${event.images[0]}`} alt={event.name} className="w-full h-full object-cover" />
                       </div>
                     )}
                     <h3 className="text-xl font-semibold mb-2">{event.name}</h3>

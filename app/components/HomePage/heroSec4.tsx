@@ -81,7 +81,7 @@ const EventDashboard = () => {
               dark:bg-opacity-80 relative z-20">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-4 shadow-lg">
                 <img
-                  src="/image.png"
+                  src="https://catalystiq.fun/image.png"
                   alt="Event stage"
                   className="w-full h-full object-cover transform transition-transform duration-300 hover:scale-110"
                 />
