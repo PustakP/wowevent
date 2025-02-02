@@ -38,23 +38,27 @@ export async function updateSession(request: NextRequest) {
 }
 
 export async function middleware(request: NextRequest) {
-  const hostname = request.headers.get("host") || '';
-  const subdomain = hostname.split('.')[0]; // extract subdomain from host
+    const hostname = request.headers.get("host") || '';
+    const subdomain = hostname.split('.')[0];
 
-  // create supabase client
-  const supabase = await createClient();
+    // create supabase client
+    const supabase = await createClient();
 
-  // Check if the subdomain exists in the database
-  const { data: subdomainData, error } = await supabase
-    .from('subdomains')
-    .select('name')
-    .eq('name', subdomain)
-    .single();
+    // Check if the subdomain exists in the database
+    const { data: subdomainData, error } = await supabase
+        .from('subdomains')
+        .select('name')
+        .eq('name', subdomain)
+        .single();
 
-  if (error || !subdomainData) {
-    return NextResponse.json({ message: 'Subdomain not found' }, { status: 404 }); // return 404 if not found
-  }
+    if (error || !subdomainData) {
+        return NextResponse.json({ message: 'Subdomain not found' }, { status: 404 }); // return 404 if not found
+    }
 
-  // Proceed with the request if subdomain exists
-  return NextResponse.next();
+    // Rewrite the URL to /subdomain
+    const url = request.nextUrl.clone();
+    url.pathname = `/${subdomain}`;
+    const response = NextResponse.rewrite(url)
+    response.headers.set("x-original-host", hostname)
+    return response;
 }
