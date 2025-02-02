@@ -13,11 +13,14 @@ export async function POST(request: Request) {
     // Create Supabase client
     const supabase = await createClient();
 
+    // Remove ".catalystiq.fun" from subdomain
+    const cleanedSubdomain = subdomain.replace('.catalystiq.fun', '');
+
     // Check for existing subdomain
     const { data: existingSubdomain, error: checkError } = await supabase
       .from('subdomains')
       .select('name')
-      .eq('name', subdomain)
+      .eq('name', cleanedSubdomain)
       .single();
 
     // Handle errors (ignore "not found" error PGRST116)
@@ -34,7 +37,7 @@ export async function POST(request: Request) {
     // Insert new subdomain (only the name) and return ID
     const { data, error } = await supabase
       .from('subdomains')
-      .insert([{ name: subdomain }])
+      .insert([{ name: cleanedSubdomain }])
       .select('id');
 
     if (error) {
