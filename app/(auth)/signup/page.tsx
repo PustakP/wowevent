@@ -23,10 +23,9 @@ export default function SignUp() {
   
       if (session) {
         // If user is logged in, redirect to dashboard
-        router.push("/dashboard");
+        router.push("/onboarding"); // Redirect after signup
       }
     };
-      router.push("/")
   
     checkUserSession();
   }, []);
