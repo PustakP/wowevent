@@ -21,6 +21,7 @@ export default function NameInput() {
 
         if (response.ok) {
             // handle success (e.g., redirect or show success message)
+            window.location.href = `http://${subdomain}`;
         } else {
             const errorData = await response.json();
             alert(errorData.message); // Show the error message from the API
