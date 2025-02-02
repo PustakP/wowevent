@@ -1,16 +1,15 @@
+"use client"
 import React, { useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import VendorCard from './VendorCard';
 
 // Assuming supabase client is imported from another file
-const supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
-
+import { createClient } from '../utils/supabase/clients';
 const VendorGrid: React.FC = () => {
   const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const { data, error } = await supabase
+      const { data, error } = await createClient()
         .from('events')
         .select('*'); // Adjust columns as per your table structure
 
