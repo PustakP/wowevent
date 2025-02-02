@@ -1,4 +1,3 @@
-export default function SubdomainPage({ params }: { params: { subdomain: string } }) {
-    // Use params.subdomain to fetch/display content
+export default function SubdomainPage({ params }: { params: { subdomain: string } }) { // directly type params
     return <div>Subdomain: {params.subdomain}</div>
-  }
+}
