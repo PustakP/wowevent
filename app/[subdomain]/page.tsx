@@ -30,7 +30,7 @@ export default async function SubdomainPage({ params }: { params: tParams }) {
   const { data: event, error } = await supabase
     .from('events')
     .select('*')
-    .eq('subdomain', subdomain[0])
+    .eq('subdomain', subdomain)  // subdomain is an array  
     .single();
   
   console.log('event data:', event); // dbg: log fetched event data

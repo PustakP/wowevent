@@ -24,9 +24,9 @@ export async function middleware(request: NextRequest) {
 
     // Check if subdomain exists in database
     const { data, error } = await supabase
-      .from('subdomains')   
-      .select('name')
-      .eq('name', subdomain)
+      .from('events')   
+      .select('subdomain')
+      .eq('subdomain', subdomain)
       .single();
 
     // Handle unknown subdomains
