@@ -22,9 +22,9 @@ export async function middleware(request: NextRequest) {
 
     // Fetch subdomain data
     const { data: subdomainData, error: subdomainError } = await supabase
-      .from('subdomains')
-      .select('name')
-      .eq('name', subdomain)
+      .from('events')
+      .select('subdomain')
+      .eq('subdomain', subdomain)
       .single();
 
     if (subdomainError || !subdomainData) {
