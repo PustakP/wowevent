@@ -2,23 +2,26 @@ import React from 'react';
 import { Calendar, Clock, Tag } from 'lucide-react';
 import Link from 'next/link';
 
+interface Vendor {
+  id: string;
+  name: string;
+  image: string;
+  date: string;
+  requirements: string;
+  duration?: string;
+  type: string;
+}
+
 interface VendorCardProps {
-  vendor: {
-    id: string;
-    name: string;
-    image: string;
-    date: string;
-    duration?: string;
-    type: string;
-  };
+  vendor: Vendor;
 }
 
 const VendorCard: React.FC<VendorCardProps> = ({ vendor }) => {
   return (
-    <Link 
-      href={`/vendors/${vendor.id}`}
-      className="group block"
-    >
+    // <Link 
+    //   href={`/vendors/${vendor.id}` as string}
+    //   className="group block"
+    // >
       <div className="rounded-xl overflow-hidden bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
         <div className="relative aspect-[5/4] overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5 group-hover:from-blue-600/10 group-hover:to-purple-600/10" />
@@ -52,9 +55,11 @@ const VendorCard: React.FC<VendorCardProps> = ({ vendor }) => {
           <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
             {vendor.name}
           </h3>
+
+          <p className="text-gray-600">{vendor.requirements}</p>
         </div>
       </div>
-    </Link>
+    // </Link>
   );
 };
 
