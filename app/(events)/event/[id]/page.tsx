@@ -1,4 +1,10 @@
 import EventBiddingPage from "./component";
-export default function Page({ params }: { params: { id: string } }) {
-    return <EventBiddingPage eventId={params.id} />;
+
+// Define type for route parameters
+type tParams = Promise<{ id: string }>;
+
+
+export default async function Page({ params }: { params: tParams } ) {
+    const { id }: { id: string } = await params;
+    return <EventBiddingPage eventId={id} />;
   }
