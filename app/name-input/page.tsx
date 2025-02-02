@@ -10,20 +10,24 @@ export default function NameInput() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const subdomain = `${name}.catalystiq.fun`;
-     try {
+    try {
         const response = await fetch('/api/register-subdomain', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ subdomain }),
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ subdomain }),
         });
 
-         if (response.ok) {} else {alert ('error registering subdomain')}
-      } catch (error) {
+        if (response.ok) {
+            // handle success
+        } else {
+            alert('Error registering subdomain');
+        }
+    } catch (error) {
         console.error('Error registering subdomain:', error);
-        alert('error registering subdomain')
-      }
+        alert('Error registering subdomain');
+    }
   };
 
   return (

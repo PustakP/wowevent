@@ -1,6 +1,7 @@
 // app/[subdomain]/page.tsx
 import { headers } from 'next/headers';
 import pool from '@/app/lib/db'; // import the database connection
+import { NextResponse } from 'next/server';
 
 interface Subdomain {
     name: string; // define the structure of the subdomain object
@@ -29,7 +30,7 @@ export default async function SubdomainPage({ params }: { params: any }) {
     console.log('Is Valid Subdomain:', isValidSubdomain); // log validation result
 
     if (!isValidSubdomain) {
-        return <div><h1>Error: Subdomain not registered</h1></div>; // return error if not valid
+        return NextResponse.json({ message: 'Subdomain not found' }, { status: 404 }); // return 404 if not valid
     }
 
     return (
