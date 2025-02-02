@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 module.exports = {
+  basePath: '',
+  assetPrefix: 'https://catalystiq.fun',  
   experimental: {
     typedRoutes: true,
   },
