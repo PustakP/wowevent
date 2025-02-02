@@ -1,35 +1,113 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { Mail, Lock, ArrowRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Mail, Lock, ArrowRight, Moon, Sun } from 'lucide-react';
+import { createClient } from "../../utils/supabase/clients";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [darkMode, setDarkMode] = useState(false);
+  const [error, setError] = useState('');
+  const supabase = createClient();
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Check system preference for dark mode
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setDarkMode(true);
+    }
+
+    // Check if the user is already logged in
+    const checkUserSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        router.push("/dashboard"); // Redirect to dashboard after login
+      }
+    };
+    
+    checkUserSession();
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle login logic here
+    setError('');
+    
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+  
+    if (error) {
+      setError(error.message);
+      return;
+    }
+  
+    router.push("/dashboard");
   };
 
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/onboarding`
+      }
+    });
+  
+    if (error) {
+      setError(error.message);
+    }
+  };
+  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+    <div className={`min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200 
+      ${darkMode ? 
+        'bg-gradient-to-br from-gray-900 to-gray-800' : 
+        'bg-gradient-to-br from-blue-50 to-blue-100'}`}>
+      <button
+        onClick={() => setDarkMode(!darkMode)}
+        className={`fixed top-4 right-4 p-2 rounded-full 
+          ${darkMode ? 
+            'bg-gray-700 text-yellow-400 hover:bg-gray-600' : 
+            'bg-white text-gray-700 hover:bg-gray-100'} 
+          shadow-lg transition-all duration-200`}
+      >
+        {darkMode ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+      </button>
+
+      <div className={`max-w-md w-full rounded-2xl shadow-2xl p-8 transition-colors duration-200
+        ${darkMode ? 
+          'bg-gray-800 shadow-gray-900/50' : 
+          'bg-white shadow-gray-200/50'}`}>
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
-          <p className="mt-2 text-gray-600">Sign in to your account</p>
+          <h2 className={`text-3xl font-bold mb-2 
+            ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            Welcome back
+          </h2>
+          <p className={`text-sm 
+            ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            Sign in to your account
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        {error && (
+          <div className="mt-4 p-3 rounded-lg bg-red-100 border border-red-200 text-red-600">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="mt-8 space-y-6">
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className={`block text-sm font-medium 
+                ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Email address
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <Mail className={`h-5 w-5 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`} />
                 </div>
                 <input
                   id="email"
@@ -38,19 +116,23 @@ export default function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  className={`block w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-offset-2 transition-colors duration-200
+                    ${darkMode ? 
+                      'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 focus:ring-offset-gray-800' : 
+                      'bg-white border-gray-300 focus:ring-blue-500 focus:border-blue-500'}`}
                   placeholder="you@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className={`block text-sm font-medium 
+                ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Password
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                  <Lock className={`h-5 w-5 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`} />
                 </div>
                 <input
                   id="password"
@@ -59,7 +141,10 @@ export default function Login() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  className={`block w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-offset-2 transition-colors duration-200
+                    ${darkMode ? 
+                      'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 focus:ring-offset-gray-800' : 
+                      'bg-white border-gray-300 focus:ring-blue-500 focus:border-blue-500'}`}
                   placeholder="••••••••"
                 />
               </div>
@@ -74,14 +159,16 @@ export default function Login() {
                 type="checkbox"
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="remember-me" className={`ml-2 block text-sm
+                ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Remember me
               </label>
             </div>
 
             <Link
               href="/forgot-password"
-              className="text-sm font-medium text-blue-600 hover:text-blue-500"
+              className={`text-sm font-medium hover:underline
+                ${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'}`}
             >
               Forgot password?
             </Link>
@@ -90,7 +177,10 @@ export default function Login() {
           <div>
             <button
               type="submit"
-              className="w-full flex justify-center items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-white bg-[#1D4ED8] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className={`w-full flex justify-center items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-white transition-colors duration-200
+                ${darkMode ? 
+                  'bg-blue-600 hover:bg-blue-700' : 
+                  'bg-blue-600 hover:bg-blue-700'}`}
             >
               Sign in <ArrowRight className="ml-2 h-5 w-5" />
             </button>
@@ -99,17 +189,25 @@ export default function Login() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
+                <div className={`w-full border-t 
+                  ${darkMode ? 'border-gray-600' : 'border-gray-300'}`} />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                <span className={`px-2 
+                  ${darkMode ? 'bg-gray-800 text-gray-400' : 'bg-white text-gray-500'}`}>
+                  Or continue with
+                </span>
               </div>
             </div>
 
             <div className="mt-6">
               <button
                 type="button"
-                className="w-full flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-gray-700 hover:bg-gray-50"
+                onClick={handleGoogleLogin}
+                className={`w-full flex justify-center items-center px-4 py-2 border rounded-lg shadow-sm transition-colors duration-200
+                  ${darkMode ? 
+                    'bg-gray-700 border-gray-600 text-white hover:bg-gray-600' : 
+                    'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'}`}
               >
                 <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
                   <path
@@ -135,9 +233,13 @@ export default function Login() {
           </div>
         </form>
 
-        <p className="mt-8 text-center text-sm text-gray-600">
+        <p className={`mt-8 text-center text-sm
+          ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
           Don't have an account?{' '}
-          <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+          <Link 
+            href="/signup" 
+            className={`font-medium hover:underline
+              ${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'}`}>
             Sign up
           </Link>
         </p>

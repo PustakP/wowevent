@@ -1,58 +1,58 @@
+// app/api/register-subdomain/route.ts
+import { createClient } from '../../utils/supabase/clients';
 import { NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
 
 export async function POST(request: Request) {
   try {
+    const supabase = createClient();
+    
     const { subdomain } = await request.json();
     
-    // Validate subdomain format
-    if (typeof subdomain !== 'string' || subdomain.trim() === '') {
-      return NextResponse.json({ message: 'Invalid subdomain' }, { status: 400 });
+    // Validate input
+    if (!subdomain || typeof subdomain !== 'string') {
+      return NextResponse.json(
+        { message: 'Subdomain is required' }, 
+        { status: 400 }
+      );
     }
 
-    // Create Supabase client
-    const supabase = await createClient();
+    // Clean and validate subdomain format
+    const cleanedSubdomain = subdomain
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, '')
+      .trim();
 
-    // Remove ".catalystiq.fun" from subdomain
-    const cleanedSubdomain = subdomain.replace('.catalystiq.fun', '');
+    if (!/^[a-z0-9-]+$/.test(cleanedSubdomain)) {
+      return NextResponse.json(
+        { message: 'Only lowercase letters, numbers, and hyphens allowed' }, 
+        { status: 400 }
+      );
+    }
 
-    // Check for existing subdomain
-    const { data: existingSubdomain, error: checkError } = await supabase
-      .from('subdomains')
-      .select('name')
-      .eq('name', cleanedSubdomain)
+    // Check subdomain availability in events table
+    const { data: existingEvent, error } = await supabase
+      .from('events')
+      .select('subdomain')
+      .eq('subdomain', cleanedSubdomain)
       .single();
 
-    // Handle errors (ignore "not found" error PGRST116)
-    if (checkError && checkError.code !== 'PGRST116') {
-      console.error('Error checking subdomain:', checkError);
-      return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    if (!error && existingEvent) {
+      return NextResponse.json(
+        { message: 'Subdomain already in use' }, 
+        { status: 409 }
+      );
     }
 
-    // Check if subdomain exists
-    if (existingSubdomain) {
-      return NextResponse.json({ message: 'Subdomain already exists' }, { status: 400 });
-    }
+    return NextResponse.json({
+      message: 'Subdomain available',
+      subdomain: cleanedSubdomain
+    }, { status: 200 });
 
-    // Insert new subdomain (only the name) and return ID
-    const { data, error } = await supabase
-      .from('subdomains')
-      .insert([{ name: cleanedSubdomain }])
-      .select('id');
-
-    if (error) {
-      console.error('Error inserting subdomain:', error);
-      return NextResponse.json({ message: 'Error registering subdomain' }, { status: 500 });
-    }
-
-    // Validate response data
-    if (!data || data.length === 0) {
-      return NextResponse.json({ message: 'No data returned' }, { status: 400 });
-    }
-
-    return NextResponse.json({ message: 'Subdomain registered', id: data[0].id }, { status: 200 });
   } catch (error) {
-    console.error('Error registering subdomain:', error);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    console.error('Error in subdomain registration:', error);
+    return NextResponse.json(
+      { message: 'Internal server error' }, 
+      { status: 500 }
+    );
   }
 }

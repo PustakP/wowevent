@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from './app/utils/supabase/server';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
@@ -6,7 +6,6 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const baseDomain = 'catalystiq.fun';
 
-  // Extract subdomain correctly
   let subdomain = '';
   if (process.env.NODE_ENV === 'production') {
     subdomain = hostname.replace(`.${baseDomain}`, '').replace('www.', '');
@@ -14,7 +13,6 @@ export async function middleware(request: NextRequest) {
     subdomain = hostname.replace('.localhost:3000', '').replace('www.', '');
   }
 
-  // Bypass middleware for root domain and assets
   if (hostname === baseDomain || subdomain === 'localhost:3000' || !subdomain) {
     return NextResponse.next();
   }
@@ -22,29 +20,39 @@ export async function middleware(request: NextRequest) {
   try {
     const supabase = await createClient();
 
-    // Check if subdomain exists in database
-    const { data, error } = await supabase
-      .from('subdomains')   
+    // Fetch subdomain data
+    const { data: subdomainData, error: subdomainError } = await supabase
+      .from('subdomains')
       .select('name')
       .eq('name', subdomain)
       .single();
 
-    // Handle unknown subdomains
-    if (error || !data) {
+    if (subdomainError || !subdomainData) {
       return NextResponse.rewrite(new URL('/404', request.url));
     }
 
-    // Rewrite to dynamic route with subdomain parameter
-    if (hostname !== baseDomain) {
-      url.pathname = `/${subdomain}${url.pathname}`;
-      
-      // For root path, ensure trailing slash is handled
-      if (url.pathname === `/${subdomain}`) {
-        url.pathname = `/${subdomain}/`;
-      }
+    // Fetch event details based on subdomain
+    const { data: eventData, error: eventError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('subdomain', subdomain)
+      .single();
+
+    if (eventError || !eventData) {
+      return NextResponse.rewrite(new URL('/404', request.url));
     }
 
-    return NextResponse.rewrite(url);
+    // Rewrite the request URL
+    url.pathname = `/${subdomain}${url.pathname}`;
+    if (url.pathname === `/${subdomain}`) {
+      url.pathname = `/${subdomain}/`;
+    }
+
+    // Attach event data as headers
+    const response = NextResponse.rewrite(url);
+    response.headers.set('x-event-data', JSON.stringify(eventData));
+
+    return response;
 
   } catch (error) {
     console.error('Middleware error:', error);
