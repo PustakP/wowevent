@@ -68,8 +68,8 @@ export default async function SubdomainPage({ params }: { params: tParams }) {
         <div className="mt-6">
           <h2 className="text-xl font-semibold">Gallery</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
-            {event.images.map((img: string, index: number) => (
-              <img key={index} src={img} alt={`Event image ${index + 1}`} className="rounded-lg shadow-md" />
+            {Array.from({ length: 4 }).map((_, index: number) => (
+              <img key={index} src={`https://placehold.co/600x400`} alt={`Placeholder image ${index + 1}`} className="rounded-lg shadow-md" />
             ))}
           </div>
         </div>
