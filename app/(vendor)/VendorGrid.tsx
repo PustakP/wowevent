@@ -1,27 +1,64 @@
-"use client"
+"use client"; // Marking this as a Client Component for Next.js
+
 import React, { useEffect, useState } from 'react';
 import VendorCard from './VendorCard';
-
-// Assuming supabase client is imported from another file
 import { createClient } from '../utils/supabase/clients';
+
+// Define the type for an event
+interface Event {
+  id: string;
+  name: string;
+  images: string[]; // Array of image URLs
+  date: string; // Assuming date is stored as a string (e.g., ISO format)
+  type: string;
+  requirements: string[]; // Change this to an array of strings
+}
+
 const VendorGrid: React.FC = () => {
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const { data, error } = await createClient()
-        .from('events')
-        .select('*'); // Adjust columns as per your table structure
+      const supabase = createClient(); // Initialize Supabase client
+      try {
+        const { data, error } = await supabase
+          .from('events') // Replace 'events' with your table name
+          .select('*'); // Fetch all columns or specify the ones you need
 
-      if (error) {
-        console.error('Error fetching events:', error.message);
-      } else {
-        setEvents(data || []);
+        if (error) {
+          throw error;
+        }
+
+        // Map the data to the Event type
+        const formattedEvents = data.map((event: any) => ({
+          id: event.id,
+          name: event.name,
+          images: event.images || [], // Default to an empty array if images is null
+          date: event.date,
+          type: event.type,
+          requirements: event.requirements || [], // Ensure requirements is an array
+        }));
+
+        setEvents(formattedEvents); // Set the fetched events in state
+      } catch (err: any) {
+        setError(err.message); // Handle errors
+      } finally {
+        setLoading(false); // Set loading to false after fetching
       }
     };
 
     fetchEvents();
   }, []);
+
+  if (loading) {
+    return <div>Loading events...</div>;
+  }
+
+  if (error) {
+    return <div>Error fetching events: {error}</div>;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -41,10 +78,10 @@ const VendorGrid: React.FC = () => {
             vendor={{
               id: event.id,
               name: event.name,
-              image: event.image[0] || '/placeholder.svg?height=200&width=250',
+              images: event.images[0] || '/placeholder.svg?height=200&width=250', // Use the first image or a placeholder
               date: event.date,
-              requirements: event.requirements,
               type: event.type,
+              requirements: Array.isArray(event.requirements) ? event.requirements : (typeof event.requirements === 'string' ? [event.requirements] : []), // Ensure requirements is an array
             }}
           />
         ))}

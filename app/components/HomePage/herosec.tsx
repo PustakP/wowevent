@@ -31,14 +31,14 @@ export default function Home() {
           </motion.h1>
           
           <motion.p 
-            className="text-2xl md:text-3xl bg-gradient-to-r from-foreground/80 to-foreground/60 bg-clip-text text-transparent max-w-3xl"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            The one-stop intelligent platform for seamless event management, 
-            personalized experiences, and end-to-end collaboration.
-          </motion.p>
+      className="text-2xl md:text-3xl bg-gradient-to-r from-white to-gray-400 dark:from-white dark:to-gray-400 bg-clip-text text-transparent max-w-3xl"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
+      The one-stop intelligent platform for seamless event management, 
+      personalized experiences, and end-to-end collaboration.
+    </motion.p>
           
           <motion.div 
             className="flex flex-col sm:flex-row gap-6"
@@ -51,7 +51,7 @@ export default function Home() {
               className="text-xl px-8 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0"
               asChild
             >
-              <Link href="/get-started">
+              <Link href="/signup">
                 Get started
               </Link>
             </Button>
@@ -61,7 +61,7 @@ export default function Home() {
               className="text-xl px-8 py-6 rounded-full border-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r hover:from-blue-600/10 hover:to-purple-600/10 border-blue-600/20 hover:border-purple-600/30 text-foreground"
               asChild
             >
-              <Link href="/learn-more">
+              <Link href="/signup">
                 Learn more
               </Link>
             </Button>
@@ -72,7 +72,3 @@ export default function Home() {
   );
 }
 
-// Add this to your global CSS file
-const styles = `
-
-`;

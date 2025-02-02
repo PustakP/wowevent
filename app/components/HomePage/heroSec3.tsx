@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Mail, Lock } from 'lucide-react';
+import Link from 'next/link';
 
 const WEHIndiaSignup = () => {
   const [email, setEmail] = useState('');
@@ -69,7 +70,7 @@ const WEHIndiaSignup = () => {
                 <Lock className="absolute right-3 top-3 text-gray-400 group-hover:text-blue-500 transition-colors" size={20} />
               </div>
             </div>
-
+            <Link href={'/signup'}>
             <button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg
@@ -77,6 +78,7 @@ const WEHIndiaSignup = () => {
             >
               Create Account
             </button>
+            </Link>
           </form>
         </div>
 
