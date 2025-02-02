@@ -21,7 +21,10 @@ interface Event {
 
 export default async function SubdomainPage({ params }: { params: tParams }) {
   const { subdomain }: { subdomain: string[] } = await params;
+  console.log('subdomain:', subdomain); // dbg: log subdomain
+
   const supabase = await createClient();
+  console.log('supabase client created'); // dbg: log client creation
 
   // Fetch event details based on subdomain
   const { data: event, error } = await supabase
@@ -29,11 +32,16 @@ export default async function SubdomainPage({ params }: { params: tParams }) {
     .select('*')
     .eq('subdomain', subdomain[0])
     .single();
+  
+  console.log('event data:', event); // dbg: log fetched event data
+  console.log('fetch error:', error); // dbg: log fetch error
 
   if (error || !event) {
+    console.log('event not found or error occurred'); // dbg: log error case
     return <div className="text-center text-xl font-semibold mt-10">Event not found</div>;
   }
 
+  console.log('event found:', event); // dbg: log found event
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold">{event.name}</h1>
